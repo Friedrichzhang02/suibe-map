@@ -1,0 +1,12 @@
+# 渲染原始大图、中间文件（可重新生成）
+src/renders/
+src/site/
+src/sprites/*.png
+src/logs/
+src/pylibs/
+src/__pycache__/
+__pycache__/
+*.blend1
+.DS_Store
+# 参考资料（卫星图、官方平面图等）不入库
+ref/

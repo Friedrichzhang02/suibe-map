@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>上海对外经贸大学图书馆 · 环境地图</title>
+<style>__LEAFLET_CSS__</style>
+<style>
+:root{--ink:#1d2433;--muted:#667085;--line:#e6e8ec;--bg:#f5f4f0;--accent:#1f5fbf;--warm:#8a6a3c}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;line-height:1.65}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{padding:36px 0 14px}
+.eyebrow{font-size:12.5px;letter-spacing:.08em;color:var(--warm);font-weight:600}
+h1{font-size:30px;line-height:1.25;margin:6px 0 10px;font-weight:700}
+.lede{color:#475467;font-size:15.5px;max-width:760px;margin:0}
+.stats{display:flex;gap:30px;flex-wrap:wrap;margin:18px 0 0;padding:0;list-style:none}
+.stats li{font-size:12.5px;color:var(--muted)} .stats b{display:block;font-size:20px;color:var(--ink);font-weight:650}
+.viewer{position:fixed;inset:0;overflow:hidden;background:#6b8a3a}
+html,body{height:100%;overflow:hidden}
+.title-chip{position:absolute;top:12px;right:12px;z-index:900;background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;color:#101828;box-shadow:0 2px 10px rgba(16,24,40,.1)}
+.credit{position:absolute;right:8px;bottom:4px;z-index:900;font-size:11px;color:rgba(255,255,255,.85);text-shadow:0 1px 2px rgba(0,0,0,.5);pointer-events:none}
+@media (max-width:800px){.title-chip{top:auto;bottom:66px;right:8px;font-size:12px}.credit{display:none}}
+#map{position:absolute;inset:0;background:#6b8a3a}
+.leaflet-container{font-family:inherit}
+.hint{font-size:12.5px;color:var(--muted);margin:14px 0 0}
+.vt{position:absolute;top:12px;left:12px;z-index:500;display:flex;gap:6px;flex-wrap:wrap}
+.vt button{border:none;background:rgba(255,255,255,.95);box-shadow:0 1px 4px rgba(16,24,40,.2);border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--ink)}
+.vt button.on{background:var(--ink);color:#fff}
+.lbl{background:rgba(255,255,255,.95);border:none;border-radius:7px;box-shadow:0 1px 5px rgba(16,24,40,.25);padding:3px 10px;font-size:13.5px;font-weight:650;color:var(--ink)}
+.lbl.water{color:#0b5c8a;background:rgba(255,255,255,.88)}
+.lbl::before{display:none}
+.hide-labels .lbl{display:none}
+.poi{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(16,24,40,.35)}
+.poi.bird{background:#fff;color:#1d2433;font-size:14px}
+.hide-pois .poi{display:none}
+.toast{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:620;background:rgba(29,36,51,.88);color:#fff;font-size:13px;padding:7px 14px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.panel{position:absolute;top:12px;right:12px;bottom:12px;width:310px;z-index:600;background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(16,24,40,.2);display:none;overflow:auto}
+.panel.show{display:block}
+.panel .ph{height:140px;background:#ddd center/cover no-repeat;border-radius:14px 14px 0 0}
+.panel .pc{padding:14px 16px 16px}
+.panel .cat{font-size:12px;font-weight:600;color:var(--warm)}
+.panel h3{margin:2px 0 6px;font-size:19px}
+.panel p{font-size:13.5px;color:#344054;margin:0 0 10px}
+.panel dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin:0 0 10px}
+.panel dt{color:var(--muted)} .panel dd{margin:0}
+.panel .pl{list-style:none;padding:0;margin:0 0 8px}
+.panel .pl li{display:flex;gap:8px;align-items:center;font-size:13px;padding:6px 0;cursor:pointer;border-top:1px solid var(--line)}
+.panel .pl li span{width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+.panel .note{font-size:11.5px;color:var(--muted)}
+.panel .x{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.92);font-size:18px;cursor:pointer}
+section{padding:26px 0 6px}
+h2{font-size:21px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#faf9f6;font-weight:600;font-size:12.5px;color:var(--muted)}
+.tag{display:inline-block;font-size:11.5px;border-radius:6px;padding:1px 7px;font-weight:600}
+.t-real{background:#e3f1e6;color:#1d6b35}.t-meas{background:#e6eefb;color:#1f4f99}.t-est{background:#fbf0dc;color:#8a5a12}.t-ill{background:#efe9f8;color:#5b3d8f}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fig{background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:0}
+.fig img{display:block;width:100%;height:auto}
+.fig figcaption{font-size:12px;color:var(--muted);padding:7px 12px}
+ol.src{font-size:13px;color:#475467;padding-left:20px}
+footer{padding:26px 0 50px;color:var(--muted);font-size:12.5px}
+.tbar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:900;display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;
+  box-shadow:0 4px 18px rgba(16,24,40,.12);width:min(560px,calc(100% - 120px))}
+.tbar button{border:0;background:#101828;color:#fff;width:30px;height:30px;border-radius:50%;font-size:12px;cursor:pointer;flex:none}
+.tbar .now{background:transparent;color:#475467;width:auto;height:auto;border-radius:6px;padding:3px 6px;font-size:12px;border:1px solid var(--line)}
+.tbar .now.on{background:#101828;color:#fff;border-color:#101828}
+.tbar .tl{font:600 14px/1.1 ui-monospace,SFMono-Regular,Menlo,monospace;min-width:92px;color:#101828}
+.tbar .tl small{display:block;font:500 11px/1.3 system-ui,sans-serif;color:var(--muted)}
+.tbar input[type=range]{flex:1;min-width:80px;-webkit-appearance:none;appearance:none;height:8px;border-radius:999px;cursor:pointer;
+  background:linear-gradient(90deg,#0b1a33 0%,#0b1a33 18%,#5b6fa3 22%,#f2a65a 26%,#cfe6ff 34%,#e9f4ff 50%,#cfe6ff 66%,#f2a65a 73%,#5b6fa3 76%,#0b1a33 82%,#0b1a33 100%)}
+.tbar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid #101828;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.tbar input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #101828}
+@media (max-width:800px){.tbar{bottom:8px;width:calc(100% - 70px);left:calc(50% + 22px)}.tbar .tl{min-width:70px}}
+@media (max-width:800px){h1{font-size:24px}.panel{top:auto;left:8px;right:8px;bottom:8px;width:auto;max-height:62%}.panel .ph{height:90px}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="viewer">
+  <div id="map"></div>
+  <div class="vt">
+    <button id="bLabels" class="on">名称</button>
+    <button id="bPois" class="on">兴趣点</button>
+    <button id="bReset">全图</button>
+    <button id="bAnim" class="on">动画 ❚❚</button>
+    <button id="bFollow">跟随白鹭</button>
+  </div>
+  <div class="tbar" id="tbar">
+    <button id="tPlay" aria-label="播放一天">▶</button>
+    <input type="range" id="tSlider" min="0" max="1439" step="1" value="870" aria-label="一天中的时间">
+    <div class="tl" id="tLabel">14:30<small>午后</small></div>
+    <button class="now on" id="tNow">现在</button>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="panel" id="panel">
+    <button class="x" id="px" aria-label="关闭">×</button>
+    <div class="ph" id="pph"></div>
+    <div class="pc">
+      <div class="cat" id="pcat"></div>
+      <h3 id="pname"></h3>
+      <p id="pdesc"></p>
+      <dl id="pdl"></dl>
+      <ul class="pl" id="ppl"></ul>
+      <div class="note" id="pnote"></div>
+    </div>
+  </div>
+  <div class="title-chip">上海对外经贸大学 · 图书馆与思源湖</div>
+  <div class="credit">© OpenStreetMap contributors · 个人项目原型，非学校官方地图</div>
+</div>
+
+<script>__LEAFLET_JS__</script>
+<script>
+const DATA = __DATA__;
+const MAXZ = __MAXZ__, S = Math.pow(2, MAXZ), W = DATA.w, H = DATA.h;
+const ll = ([x, y]) => [-y / S, x / S];
+const bounds = L.latLngBounds([[-H / S, 0], [0, W / S]]);
+const map = L.map('map', {crs: L.CRS.Simple, minZoom: 0, maxZoom: MAXZ + 1, zoomSnap: 0, zoomDelta: 0.5, wheelPxPerZoomLevel: 90,
+  maxBounds: bounds, maxBoundsViscosity: 1, attributionControl: false});
+// ---------------------------------------------------------------- 一天中的光影：11 个时刻各一套瓦片，相邻两套交叉淡化
+const KEYS = ['0200', '0520', '0615', '0800', '1000', '1200', '1430', '1630', '1730', '1810', '2000'].map(k => ({k, t: +k.slice(0, 2) + k.slice(2) / 60}));
+const tLayers = {};
+const tLayer = k => tLayers[k] || (tLayers[k] = L.tileLayer(`tiles/t${k}/{z}/{x}_{y}.webp`, {tileSize: 1024, maxNativeZoom: MAXZ, minNativeZoom: 0, maxZoom: MAXZ + 1, bounds, noWrap: true, keepBuffer: 3, className: 'tl-' + k}));
+function sunPos(t, lat = 31.05, lon = 121.21, tz = 8, doy = 266) {          // 春分/秋分日的太阳高度角、方位角（度）
+  const g = 2 * Math.PI / 365 * (doy - 1 + (t - 12) / 24), c = Math.cos, s = Math.sin;
+  const eot = 229.18 * (0.000075 + 0.001868 * c(g) - 0.032077 * s(g) - 0.014615 * c(2 * g) - 0.040849 * s(2 * g));
+  const dec = 0.006918 - 0.399912 * c(g) + 0.070257 * s(g) - 0.006758 * c(2 * g) + 0.000907 * s(2 * g) - 0.002697 * c(3 * g) + 0.00148 * s(3 * g);
+  const ha = ((t * 60 + eot + 4 * lon - 60 * tz) / 4 - 180) * Math.PI / 180, la = lat * Math.PI / 180;
+  const el = 90 - Math.acos(Math.max(-1, Math.min(1, s(la) * s(dec) + c(la) * c(dec) * c(ha)))) * 180 / Math.PI;
+  const az = (Math.atan2(s(ha), c(ha) * s(la) - Math.tan(dec) * c(la)) * 180 / Math.PI + 180) % 360;
+  return [el, az];
+}
+const sstep = (a, b, x) => { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u * u * (3 - 2 * u); };
+const PERIOD = t => t < 4.5 ? '深夜' : t < 5.75 ? '黎明' : t < 7 ? '日出' : t < 9 ? '清晨' : t < 11.5 ? '上午' : t < 13 ? '正午' : t < 16 ? '午后' : t < 17.2 ? '傍晚' : t < 18.05 ? '夕阳' : t < 19 ? '黄昏' : t < 23 ? '夜晚' : '深夜';
+window.TOD = {};
+function setTime(min) {
+  const t = ((min % 1440) + 1440) % 1440 / 60;
+  let i = KEYS.length - 1; for (let j = 0; j < KEYS.length; j++) if (KEYS[j].t <= t) i = j;
+  const A_ = KEYS[i], B_ = KEYS[(i + 1) % KEYS.length];
+  let ta = A_.t, tb = B_.t, tt = t; if (tb <= ta) tb += 24; if (tt < ta) tt += 24;
+  const f = sstep(0, 1, (tt - ta) / (tb - ta));
+  const la = tLayer(A_.k), lb = tLayer(B_.k);
+  if (!map.hasLayer(la)) la.addTo(map); if (!map.hasLayer(lb)) lb.addTo(map);
+  la.setZIndex(1); la.setOpacity(1); lb.setZIndex(2); lb.setOpacity(f);
+  for (const k in tLayers) if (k !== A_.k && k !== B_.k && map.hasLayer(tLayers[k])) map.removeLayer(tLayers[k]);
+  // 给动画层的光照参数
+  const [el, az] = sunPos(t), e = Math.max(el, 7) * Math.PI / 180, a = az * Math.PI / 180;
+  const T = window.TOD; T.t = t; T.el = el;
+  T.sun = [Math.cos(e) * Math.sin(a), Math.cos(e) * Math.cos(a), Math.sin(e)];
+  T.shadow = sstep(-1, 8, el); T.day = sstep(-6, 6, el); T.night = 1 - sstep(-9, 0, el);
+  T.egret = sstep(-4, 3, el); T.glint = sstep(1, 14, el); T.warm = 1 - sstep(8, 30, el); T.lamp = 1 - sstep(-3, 5, el);
+  const br = 0.36 + 0.64 * sstep(-9, 9, el), sat = 0.6 + 0.4 * T.day, sep = 0.28 * sstep(0, 4, el) * (1 - sstep(10, 26, el));
+  T.filter = (br > 0.99 && sep < 0.01) ? 'none' : `brightness(${br.toFixed(2)}) saturate(${sat.toFixed(2)}) sepia(${sep.toFixed(2)})`;
+  const hh = Math.floor(t), mm = Math.floor((t - hh) * 60);
+  document.getElementById('tLabel').innerHTML = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}<small>${PERIOD(t)}</small>`;
+  document.getElementById('tSlider').value = Math.round(t * 60);
+}
+const shanghaiNow = () => { const d = new Date(); return (d.getUTCHours() * 60 + d.getUTCMinutes() + 8 * 60) % 1440; };
+let tFollow = true, tPlaying = false, tCur = shanghaiNow(), tLast = 0;
+setTime(tCur);
+map.zoomControl.setPosition('bottomleft');
+(function timeUI() {
+  const sl = document.getElementById('tSlider'), bp = document.getElementById('tPlay'), bn = document.getElementById('tNow');
+  const stopFollow = () => { tFollow = false; bn.classList.remove('on'); };
+  sl.oninput = () => { stopFollow(); tCur = +sl.value; setTime(tCur); };
+  bp.onclick = () => { tPlaying = !tPlaying; bp.textContent = tPlaying ? '❚❚' : '▶'; if (tPlaying) stopFollow(); };
+  bn.onclick = () => { tFollow = true; tPlaying = false; bp.textContent = '▶'; bn.classList.add('on'); tCur = shanghaiNow(); setTime(tCur); };
+  L.DomEvent.disableClickPropagation(document.getElementById('tbar')); L.DomEvent.disableScrollPropagation(document.getElementById('tbar'));
+  function loop(now) {
+    const dt = tLast ? Math.min(0.1, (now - tLast) / 1000) : 0; tLast = now;
+    if (tPlaying) { tCur = (tCur + dt * 24) % 1440; setTime(tCur); }          // 一天约 60 秒
+    else if (tFollow && Math.floor(now / 30000) !== Math.floor((now - dt * 1000) / 30000)) { tCur = shanghaiNow(); setTime(tCur); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+function coverZoom() { const s = map.getSize(); return Math.max(Math.log2(s.x / (W / S)), Math.log2(s.y / (H / S))); }
+function home() { const z = coverZoom(); map.setMinZoom(z); map.setView(bounds.getCenter(), z + 0.1); }
+home(); map.on('resize', () => map.setMinZoom(coverZoom()));
+window.EG_MAP = map; window.EG_MAXZ = MAXZ; window.EG_PXM = __PXM__;
+const SPRITES = __SPRITES__;
+
+const POIS = [
+  {key: 'north', n: 1, name: '北入口（临湖拱门）', desc: '南翼北立面中央的两层高拱门，正对思源湖。', cls: ''},
+  {key: 'atrium', n: 2, name: '通高玻璃中庭', desc: '拱门上方的整面玻璃，对应馆内图书馆大厅。', cls: ''},
+  {key: 'roof', n: 3, name: '屋顶天窗', desc: '南翼西段屋顶的 3×3 天窗（据卫星影像）。', cls: ''},
+];
+const PLACES = {
+  library: {name: '图书馆（松江校区主馆）', cat: '教学科研', img: 'img/library.webp',
+    desc: '平面呈“L”形，环抱思源湖。现代化、全开架、自助式的多功能图书馆，曾获 2019 年度上海市建设工程“白玉兰”奖。',
+    dl: [['开馆', '2019 年 8 月'], ['层数', '地上 5 层，地下 1 层'], ['建筑面积', '近 1.9 万 m²'], ['阅览座位', '2900 余座'], ['设计藏书', '80 余万册'], ['地址', '松江区文翔路 1900 号']],
+    note: '资料来源：图书馆官网「本馆概况」、学校招标公告、教育在线报道。', pois: true},
+  lake: {name: '思源湖', cat: '景观水系', img: 'img/lake.webp',
+    desc: '图书馆西北侧的景观湖，湖岸环绕步道。图书馆的 L 形平面正好环抱湖的东南角。',
+    dl: [['水面面积', '约 2.8 公顷'], ['周长', '约 735 m']], note: '面积、周长据 OpenStreetMap 湖岸线计算。'},
+};
+const style = {color: '#1f5fbf', weight: 0, fillOpacity: 0, opacity: 0};
+const hover = {color: '#1f5fbf', weight: 2, fillColor: '#1f5fbf', fillOpacity: .12, opacity: .9};
+const sel = {color: '#1f5fbf', weight: 3, fillColor: '#1f5fbf', fillOpacity: .15, opacity: 1};
+const layers = {}; let current = null;
+for (const [key, pts] of Object.entries(DATA.shapes)) {
+  const poly = L.polygon(pts.map(ll), style).addTo(map);
+  poly.on('mouseover', () => key !== current && poly.setStyle(hover));
+  poly.on('mouseout', () => key !== current && poly.setStyle(style));
+  poly.on('click', e => { L.DomEvent.stopPropagation(e); open(key); });
+  layers[key] = poly;
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const at = key === 'library' ? ll([(Math.min(...xs) + Math.max(...xs)) / 2 + 120, Math.min(...ys) + 170]) : ll(DATA.pois.lake);
+  L.tooltip({permanent: true, direction: 'center', className: 'lbl' + (key === 'lake' ? ' water' : ''), interactive: false})
+    .setLatLng(at).setContent(key === 'library' ? '图书馆' : '思源湖').addTo(map);
+}
+const markers = POIS.map(p => {
+  const m = L.marker(ll(DATA.pois[p.key]), {icon: L.divIcon({className: '', html: `<div class="poi ${p.cls}">${p.n}</div>`, iconSize: [26, 26], iconAnchor: [13, 13]})})
+    .bindTooltip(`<b>${p.name}</b><br>${p.desc}`, {direction: 'top', offset: [0, -12]}).addTo(map);
+  m.on('click', () => { if (p.key !== 'egrets') open('library'); map.flyTo(ll(DATA.pois[p.key]), MAXZ - 0.3, {duration: .6}); m.openTooltip(); });
+  return m;
+});
+const $ = id => document.getElementById(id);
+function open(key) {
+  if (current) layers[current].setStyle(style);
+  current = key; layers[key].setStyle(sel);
+  const p = PLACES[key];
+  $('pcat').textContent = p.cat; $('pname').textContent = p.name; $('pdesc').textContent = p.desc; $('pnote').textContent = p.note;
+  $('pdl').innerHTML = p.dl.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('');
+  $('ppl').innerHTML = p.pois ? POIS.filter(x => x.key !== 'egrets').map(x => `<li data-k="${x.key}"><span>${x.n}</span>${x.name}</li>`).join('') : '';
+  $('ppl').querySelectorAll('li').forEach(li => li.onclick = () => {
+    const i = POIS.findIndex(x => x.key === li.dataset.k);
+    map.flyTo(ll(DATA.pois[li.dataset.k]), MAXZ - 0.3, {duration: .6}); setTimeout(() => markers[i].openTooltip(), 650);
+  });
+  $('pph').style.backgroundImage = `url(${p.img})`;
+  $('panel').classList.add('show');
+  map.flyToBounds(layers[key].getBounds(), {padding: [40, 40], duration: .6, maxZoom: MAXZ - 1.2});
+}
+function close() { if (current) layers[current].setStyle(style); current = null; $('panel').classList.remove('show'); }
+$('px').onclick = close; map.on('click', close);
+$('bLabels').onclick = e => { const on = e.target.classList.toggle('on'); $('map').classList.toggle('hide-labels', !on); };
+$('bPois').onclick = e => { const on = e.target.classList.toggle('on'); $('map').classList.toggle('hide-pois', !on); };
+$('bReset').onclick = () => { close(); home(); };
+$('bAnim').onclick = e => { const on = EG.toggle(); if (ST.playing !== on) ST.toggle(); if (window.WT && WT.playing !== on) WT.toggle(); e.target.classList.toggle('on', on); e.target.textContent = on ? '动画 ❚❚' : '动画 ▶'; };
+</script>
+<script src="water.js"></script>
+<script src="egrets.js"></script>
+<script src="students.js"></script>
+<script>
+if (!EG.playing) { const b = document.getElementById('bAnim'); b.classList.remove('on'); b.textContent = '动画 ▶'; }
+// 跟随白鹭：依次切换 4 只，拖动地图即退出
+(function () {
+  const NAMES = {'pair-a': '结伴的白鹭（一）', 'pair-b': '结伴的白鹭（二）', 'solo': '独自盘旋的白鹭', 'wader': '涉水觅食的白鹭'};
+  let idx = -1, following = false, toastT;
+  const btn = document.getElementById('bFollow'), toast = document.getElementById('toast');
+  const llOf = i => { const p = EG.pos(i); return [-p[1] / S, p[0] / S]; };
+  function say(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('show'), 3500); }
+  function stop() { if (!following) return; following = false; btn.classList.remove('on'); btn.textContent = '跟随白鹭'; }
+  btn.onclick = () => {
+    idx = (idx + 1) % EG.birds.length; following = false; close();
+    map.flyTo(llOf(idx), MAXZ - 0.4, {duration: 0.9});
+    map.once('moveend', () => { following = true; });
+    btn.classList.add('on'); btn.textContent = '下一只 ›';
+    say('正在跟随：' + NAMES[EG.birds[idx].name] + '（拖动地图可退出）');
+  };
+  map.on('dragstart', stop);
+  (function loop() {
+    if (following) map.panTo(llOf(idx), {animate: false});
+    requestAnimationFrame(loop);
+  })();
+})();
+</script>
+</body>
+</html>

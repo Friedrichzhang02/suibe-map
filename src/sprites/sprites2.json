@@ -1,0 +1,86 @@
+{
+ "version": 2,
+ "egrets2": {
+  "pxm": 44,
+  "cell": 194,
+  "headings": 24,
+  "cols": [
+   "flap0",
+   "flap1",
+   "flap2",
+   "flap3",
+   "flap4",
+   "flap5",
+   "flap6",
+   "flap7",
+   "glide",
+   "flare1",
+   "flare2",
+   "flare3",
+   "stand",
+   "alert",
+   "stalk",
+   "strike",
+   "walk1",
+   "walk2",
+   "walk3",
+   "walk4"
+  ],
+  "anchor": [
+   97.0,
+   97.0
+  ],
+  "stand_height": 1.035,
+  "flap": 8
+ },
+ "egrets2_refl": {
+  "pxm": 30,
+  "cell": 132,
+  "headings": 24,
+  "cols": [
+   "glide",
+   "flare3",
+   "stand",
+   "alert",
+   "stalk",
+   "strike",
+   "walk1",
+   "walk2",
+   "walk3",
+   "walk4"
+  ],
+  "anchor": [
+   66.0,
+   66.0
+  ],
+  "stand_height": 1.035,
+  "flap": 8
+ },
+ "students2": {
+  "pxm": 40,
+  "cell": 112,
+  "variants": 8,
+  "headings": 12,
+  "walk": 8,
+  "cols": [
+   "walk0",
+   "walk1",
+   "walk2",
+   "walk3",
+   "walk4",
+   "walk5",
+   "walk6",
+   "walk7",
+   "stand",
+   "talk1",
+   "talk2",
+   "phone",
+   "sit",
+   "read"
+  ],
+  "anchor": [
+   56.0,
+   96.0
+  ]
+ }
+}
