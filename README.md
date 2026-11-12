@@ -9,7 +9,7 @@
 
 开启 GitHub Pages（Settings → Pages → Branch: `main` / 文件夹 `/docs`）后，访问：
 
-`https://<你的用户名>.github.io/<仓库名>/`
+`https://Friedrichzhang02.github.io/suibe-map`
 
 ## 已实现
 
